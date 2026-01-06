@@ -30,55 +30,56 @@
     <!-- START SCREEN -->
     <div id="start-screen" class="overlay active">
         <div class="glass-card start-card">
-            <h1 class="title">For Ada</h1>
-            <p>A series of challenges await you...</p>
-            <p style="font-size: 3rem; margin: 20px;">🪄</p>
-            <button id="start-btn" class="btn-primary">Begin Adventure</button>
+            <h1 class="title">Case File #A-0106</h1>
+            <p>Detective, we need your assistance.</p>
+            <p>A valuable asset is locked away.</p>
+            <p style="font-size: 3rem; margin: 20px;">🕵️‍♀️</p>
+            <button id="start-btn" class="btn-primary">Accept Case</button>
         </div>
     </div>
 
     <main class="container hidden" id="main-container">
         <div class="glass-panel">
 
-            <!-- STAGE 1: THE GATEKEEPER (RIDDLE) -->
+            <!-- STAGE 1: THE LOGIN (RIDDLE) -->
             <section id="stage-1" class="stage active">
-                <h2 class="stage-title">Level 1: The Gatekeeper</h2>
+                <h2 class="stage-title">Step 1: Database Access</h2>
                 <div class="riddle-container">
-                    <p class="riddle-text">"I have keys but no locks. I have a space but no room. You can enter, but
-                        never go outside. What am I?"</p>
-                    <p class="hint-text">Hint: It's something you use every day...</p>
+                    <p class="riddle-text">"I have a spine but no bones. I tell you everything but have no voice. I have
+                        leaves but no tree. What am I?"</p>
+                    <p class="hint-text">Security Question 1 of 3</p>
                     <div class="input-group">
-                        <input type="text" id="riddle-input" placeholder="Type here..." autocomplete="off">
+                        <input type="text" id="riddle-input" placeholder="Enter password..." autocomplete="off">
                         <button id="riddle-submit" class="btn-icon">➜</button>
                     </div>
-                    <p id="riddle-error" class="error-msg hidden">Incorrect. Try again.</p>
+                    <p id="riddle-error" class="error-msg hidden">Access Denied.</p>
                 </div>
             </section>
 
-            <!-- STAGE 2: MEMORY LANE -->
+            <!-- STAGE 2: EVIDENCE BOARD (MEMORY) -->
             <section id="stage-2" class="stage hidden">
-                <h2 class="stage-title">Level 2: Memory Lane</h2>
-                <p class="instruction">Match the pairs to proceed</p>
+                <h2 class="stage-title">Step 2: Connect the Clues</h2>
+                <p class="instruction">Organize the evidence board to proceed.</p>
                 <div class="memory-grid" id="memory-grid"></div>
             </section>
 
-            <!-- STAGE 3: THE LOGIC CORE -->
+            <!-- STAGE 3: THE VAULT (PATTERN) -->
             <section id="stage-3" class="stage hidden">
-                <h2 class="stage-title">Level 3: The Pattern</h2>
-                <p class="instruction">Repeat the order</p>
+                <h2 class="stage-title">Step 3: The Digital Lock</h2>
+                <p class="instruction">Bypass the security firewall.</p>
                 <div class="pattern-grid">
                     <div class="pad" data-id="0"></div>
                     <div class="pad" data-id="1"></div>
                     <div class="pad" data-id="2"></div>
                     <div class="pad" data-id="3"></div>
                 </div>
-                <p id="pattern-status" class="status-msg">Watch...</p>
+                <p id="pattern-status" class="status-msg">Identifying signal...</p>
             </section>
 
-            <!-- STAGE 4: THE REVEAL -->
+            <!-- STAGE 4: CASE CLOSED -->
             <section id="stage-4" class="stage hidden">
                 <div class="gift-container" id="gift-container">
-                    <h1 class="instruction-text">You made it!</h1>
+                    <h1 class="instruction-text">Vault Unlocked</h1>
                     <div class="gift-box" id="gift-box">
                         <div class="lid"></div>
                         <div class="box"></div>
@@ -86,20 +87,20 @@
                         <div class="ribbon-horizontal"></div>
                         <div class="bow"></div>
                     </div>
-                    <p class="click-hint">Tap to open</p>
+                    <p class="click-hint">Retrieve Asset</p>
                 </div>
             </section>
 
         </div>
 
-        <!-- FINAL CELEBRATION OVERLAY (Outside glass panel) -->
+        <!-- FINAL CELEBRATION OVERLAY -->
         <div class="celebration-container hidden" id="celebration-container">
-            <h1 class="title">Happy Birthday Ada!</h1>
+            <h1 class="title">Case Closed!</h1>
             <div class="glass-card">
-                <p>You solved every puzzle, just like you solve the puzzle of my heart every day.</p>
-                <p>I hope your day is as brilliant and fun as you are.</p>
-                <p class="signature">With love ❤️</p>
-                <button id="restart-btn" class="btn-secondary">Play Again</button>
+                <p>Excellent work, Detective Ada.</p>
+                <p>The "Golden Surprise" was you all along. (And also it's your birthday!)</p>
+                <p class="signature">Love, Your Partner in Crime ❤️</p>
+                <button id="restart-btn" class="btn-secondary">Reopen Case</button>
             </div>
         </div>
 

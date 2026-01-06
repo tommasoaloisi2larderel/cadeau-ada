@@ -137,11 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- STAGE 1: RIDDLE ---
+    // --- STAGE 1: RIDDLE (DATABASE) ---
     const riddleInput = document.getElementById('riddle-input');
     const riddleSubmit = document.getElementById('riddle-submit');
     const riddleError = document.getElementById('riddle-error');
-    const CORRECT_ANSWER = "keyboard";
+    const CORRECT_ANSWER = "book";
 
     riddleSubmit.addEventListener('click', checkRiddle);
     riddleInput.addEventListener('keypress', (e) => {
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkRiddle() {
         const val = riddleInput.value.toLowerCase().trim();
-        if (val === CORRECT_ANSWER || val.includes("key")) {
+        if (val === CORRECT_ANSWER || val.includes("diary") || val.includes("file")) {
             nextStage();
         } else {
             AudioEngine.playError();
@@ -163,10 +163,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- STAGE 2: MEMORY GAME ---
+    // --- STAGE 2: MEMORY GAME (EVIDENCE) ---
     function initMemoryGame() {
         const grid = document.getElementById('memory-grid');
-        const icons = ['❤️', '🎂', '🌟', '🦄', '🎁', '🌹', '🍭', '🎵'];
+        const icons = ['🕵️‍♀️', '👣', '🔍', '🗝️', '📄', '🧤', '📼', '🧬'];
         const selectedIcons = icons.slice(0, 4);
         const cards = [...selectedIcons, ...selectedIcons].sort(() => 0.5 - Math.random());
 
