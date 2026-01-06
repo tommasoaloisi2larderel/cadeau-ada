@@ -34,7 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     riddleSubmit.addEventListener('click', checkRiddle);
     riddleInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') checkRiddle();
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent form submission glitches
+            checkRiddle();
+        }
     });
 
     function checkRiddle() {
