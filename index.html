@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Ada!</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <main class="container" id="main-container">
+        
+        <!-- INTRO / GIFT BOX STATE -->
+        <div class="gift-container" id="gift-container">
+            <h1 class="instruction-text">A special surprise for you...</h1>
+            <div class="gift-box" id="gift-box">
+                <div class="lid"></div>
+                <div class="box"></div>
+                <div class="ribbon-vertical"></div>
+                <div class="ribbon-horizontal"></div>
+                <div class="bow"></div>
+            </div>
+            <p class="click-hint">Tap to open</p>
+        </div>
+
+        <!-- REVEAL / MESSAGE STATE -->
+        <div class="celebration-container hidden" id="celebration-container">
+            <h1 class="title">Happy Birthday Ada!</h1>
+            <div class="card">
+                <p>Wishing you the most magical day filled with joy, laughter, and everything you love.</p>
+                <p>Every day is a celebration with you.</p>
+                <p class="signature">With love ❤️</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

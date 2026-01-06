@@ -1,0 +1,229 @@
+:root {
+    --primary-color: #ff9a9e;
+    --secondary-color: #fecfef;
+    --accent-color: #a18cd1;
+    --text-color: #4a4a4a;
+    --bg-gradient: linear-gradient(120deg, #f6d365 0%, #fda085 100%); 
+    /* Or a softer one: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%); */
+    --bg-gradient-soft: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    --bg-gradient-party: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-gradient-party);
+    color: var(--text-color);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+/* --- GIFT BOX STYLES --- */
+.gift-container {
+    transition: opacity 0.8s ease-out;
+}
+
+.instruction-text {
+    color: white;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 40px;
+    font-size: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.click-hint {
+    color: white;
+    margin-top: 30px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    animation: pulse 2s infinite;
+}
+
+/* 3D Gift Box Construction */
+.gift-box {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.1s;
+    animation: float 3s ease-in-out infinite;
+}
+
+.gift-box:active {
+    transform: scale(0.95);
+}
+
+.box {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.lid {
+    position: absolute;
+    top: -20px;
+    left: -5px;
+    width: 160px;
+    height: 25px;
+    background-color: #ff758c; 
+    border-radius: 4px;
+    z-index: 2;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Ribbons */
+.ribbon-vertical {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 25px;
+    background-color: white;
+    z-index: 1;
+}
+
+.lid .ribbon-vertical { /* Continuation on lid */
+    height: 100%;
+    z-index: 3;
+}
+
+.ribbon-horizontal {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    height: 25px;
+    background-color: white;
+    z-index: 1;
+}
+
+.bow {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 40px;
+}
+
+.bow::before, .bow::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 50%;
+    height: 100%;
+    background-color: white;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.bow::before {
+    left: 0;
+    transform: skew(10deg);
+}
+
+.bow::after {
+    right: 0;
+    transform: skew(-10deg);
+}
+
+
+/* --- CELEBRATION STYLES --- */
+.celebration-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease-in;
+}
+
+.celebration-container.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.title {
+    font-family: 'Playfair Display', serif;
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: slideUp 1s ease-out 0.5s forwards;
+    backdrop-filter: blur(5px);
+}
+
+.signature {
+    margin-top: 1.5rem;
+    font-weight: bold;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #ff758c;
+}
+
+.hidden {
+    display: none;
+}
+
+
+/* --- ANIMATIONS --- */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.4; }
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slideUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
