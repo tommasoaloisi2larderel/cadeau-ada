@@ -3,10 +3,9 @@
     --secondary-color: #fecfef;
     --accent-color: #a18cd1;
     --text-color: #4a4a4a;
-    --bg-gradient: linear-gradient(120deg, #f6d365 0%, #fda085 100%); 
-    /* Or a softer one: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%); */
-    --bg-gradient-soft: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
     --bg-gradient-party: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
+    --card-back: #6a11cb;
+    --card-front: #fff;
 }
 
 * {
@@ -19,11 +18,11 @@ body {
     font-family: 'Outfit', sans-serif;
     background: var(--bg-gradient-party);
     color: var(--text-color);
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .container {
@@ -34,7 +33,192 @@ body {
     padding: 20px;
 }
 
-/* --- GIFT BOX STYLES --- */
+/* --- STAGE MANAGEMENT --- */
+.stage {
+    display: none;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.stage.active {
+    display: block;
+}
+
+.stage-title {
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.instruction {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+/* --- BUTTONS & INPUTS --- */
+.btn-primary,
+.btn-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-primary {
+    background: white;
+    color: var(--accent-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active {
+    transform: scale(0.95);
+}
+
+.btn-secondary {
+    background: var(--primary-color);
+    color: white;
+    margin-top: 20px;
+}
+
+input[type="text"] {
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 2px solid white;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    margin-right: 10px;
+    width: 200px;
+}
+
+input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.error-msg {
+    color: #ff4757;
+    margin-top: 10px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* --- MEMORY GAME --- */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.memory-card {
+    background-color: transparent;
+    width: 100%;
+    aspect-ratio: 1;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.memory-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.memory-card.flipped .memory-card-inner {
+    transform: rotateY(180deg);
+}
+
+.memory-card-front,
+.memory-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.memory-card-front {
+    background-color: var(--card-back);
+    color: white;
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.memory-card-back {
+    background-color: var(--card-front);
+    color: #333;
+    transform: rotateY(180deg);
+}
+
+/* --- PATTERN GAME --- */
+.pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.pad {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    opacity: 0.6;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+}
+
+.pad.active {
+    opacity: 1;
+    transform: scale(0.95);
+    box-shadow: 0 0 20px white;
+}
+
+.pad[data-id="0"] {
+    background: #ff758c;
+}
+
+.pad[data-id="1"] {
+    background: #fee140;
+}
+
+.pad[data-id="2"] {
+    background: #00b09b;
+}
+
+.pad[data-id="3"] {
+    background: #96c93d;
+}
+
+.status-msg {
+    margin-top: 20px;
+    color: white;
+    font-weight: bold;
+    min-height: 1.5em;
+}
+
+/* --- GIFT BOX STYLES (Existing + Tweaks) --- */
 .gift-container {
     transition: opacity 0.8s ease-out;
 }
@@ -44,7 +228,7 @@ body {
     font-family: 'Playfair Display', serif;
     margin-bottom: 40px;
     font-size: 1.5rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .click-hint {
@@ -55,7 +239,6 @@ body {
     animation: pulse 2s infinite;
 }
 
-/* 3D Gift Box Construction */
 .gift-box {
     position: relative;
     width: 150px;
@@ -76,9 +259,9 @@ body {
     bottom: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--primary-color);
+    background-color: #ff9a9e;
     border-radius: 4px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .lid {
@@ -87,13 +270,12 @@ body {
     left: -5px;
     width: 160px;
     height: 25px;
-    background-color: #ff758c; 
+    background-color: #ff758c;
     border-radius: 4px;
     z-index: 2;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Ribbons */
 .ribbon-vertical {
     position: absolute;
     left: 50%;
@@ -105,7 +287,7 @@ body {
     z-index: 1;
 }
 
-.lid .ribbon-vertical { /* Continuation on lid */
+.lid .ribbon-vertical {
     height: 100%;
     z-index: 3;
 }
@@ -130,7 +312,8 @@ body {
     height: 40px;
 }
 
-.bow::before, .bow::after {
+.bow::before,
+.bow::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -138,7 +321,7 @@ body {
     height: 100%;
     background-color: white;
     border-radius: 20px 20px 0 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .bow::before {
@@ -151,7 +334,6 @@ body {
     transform: skew(-10deg);
 }
 
-
 /* --- CELEBRATION STYLES --- */
 .celebration-container {
     position: absolute;
@@ -162,6 +344,7 @@ body {
     opacity: 0;
     pointer-events: none;
     transition: opacity 1s ease-in;
+    z-index: 100;
 }
 
 .celebration-container.visible {
@@ -174,7 +357,7 @@ body {
     color: white;
     font-size: 3rem;
     margin-bottom: 2rem;
-    text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
@@ -182,7 +365,7 @@ body {
     background: rgba(255, 255, 255, 0.9);
     padding: 2rem;
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     max-width: 500px;
     margin: 0 auto;
     font-size: 1.1rem;
@@ -203,27 +386,65 @@ body {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
-
-/* --- ANIMATIONS --- */
 @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 0.4; }
+
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
 }
 
 @keyframes popIn {
-    0% { transform: scale(0.5); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 @keyframes slideUp {
-    0% { transform: translateY(20px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

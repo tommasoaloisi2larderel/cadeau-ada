@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,39 +9,85 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Playfair+Display:ital,wght@1,400;1,700&display=swap"
+        rel="stylesheet">
     <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
+
 <body>
 
-    <main class="container" id="main-container">
-        
-        <!-- INTRO / GIFT BOX STATE -->
-        <div class="gift-container" id="gift-container">
-            <h1 class="instruction-text">A special surprise for you...</h1>
-            <div class="gift-box" id="gift-box">
-                <div class="lid"></div>
-                <div class="box"></div>
-                <div class="ribbon-vertical"></div>
-                <div class="ribbon-horizontal"></div>
-                <div class="bow"></div>
-            </div>
-            <p class="click-hint">Tap to open</p>
-        </div>
 
-        <!-- REVEAL / MESSAGE STATE -->
+    <main class="container" id="main-container">
+
+        <!-- STAGE 1: THE GATEKEEPER (RIDDLE) -->
+        <section id="stage-1" class="stage active">
+            <h2 class="stage-title">Level 1: The Gatekeeper</h2>
+            <div class="riddle-container">
+                <p class="riddle-text">"I have keys but no locks. I have a space but no room. You can enter, but never
+                    go outside. What am I?"</p>
+                <p class="hint-text">(Hint: It's something you use every day...)</p>
+                <div class="input-group">
+                    <input type="text" id="riddle-input" placeholder="Type your answer..." autocomplete="off">
+                    <button id="riddle-submit" class="btn-primary">Unlock</button>
+                </div>
+                <p id="riddle-error" class="error-msg hidden">Incorrect. Try again.</p>
+            </div>
+        </section>
+
+        <!-- STAGE 2: MEMORY LANE -->
+        <section id="stage-2" class="stage hidden">
+            <h2 class="stage-title">Level 2: Memory Lane</h2>
+            <p class="instruction">Match all the pairs to proceed!</p>
+            <div class="memory-grid" id="memory-grid">
+                <!-- Cards injected by JS -->
+            </div>
+        </section>
+
+        <!-- STAGE 3: THE LOGIC CORE -->
+        <section id="stage-3" class="stage hidden">
+            <h2 class="stage-title">Level 3: The Pattern</h2>
+            <p class="instruction">Repeat the sequence correctly.</p>
+            <div class="pattern-grid">
+                <div class="pad" data-id="0"></div>
+                <div class="pad" data-id="1"></div>
+                <div class="pad" data-id="2"></div>
+                <div class="pad" data-id="3"></div>
+            </div>
+            <p id="pattern-status" class="status-msg">Watch...</p>
+        </section>
+
+        <!-- STAGE 4: THE REVEAL -->
+        <section id="stage-4" class="stage hidden">
+            <div class="gift-container" id="gift-container">
+                <h1 class="instruction-text">You did it!</h1>
+                <div class="gift-box" id="gift-box">
+                    <div class="lid"></div>
+                    <div class="box"></div>
+                    <div class="ribbon-vertical"></div>
+                    <div class="ribbon-horizontal"></div>
+                    <div class="bow"></div>
+                </div>
+                <p class="click-hint">Tap to open your prize</p>
+            </div>
+        </section>
+
+        <!-- FINAL CELEBRATION OVERLAY -->
         <div class="celebration-container hidden" id="celebration-container">
             <h1 class="title">Happy Birthday Ada!</h1>
             <div class="card">
-                <p>Wishing you the most magical day filled with joy, laughter, and everything you love.</p>
-                <p>Every day is a celebration with you.</p>
+                <p>You solved every puzzle, just like you solve the puzzle of my heart every day.</p>
+                <p>I hope your day is as brilliant and fun as you are.</p>
                 <p class="signature">With love ❤️</p>
+                <button id="restart-btn" class="btn-secondary">Play Again</button>
             </div>
         </div>
 
     </main>
 
+
     <script src="script.js"></script>
 </body>
+
 </html>
