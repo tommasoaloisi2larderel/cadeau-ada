@@ -19,7 +19,25 @@
 <body>
 
 
-    <main class="container" id="main-container">
+    <!-- BACKGROUND FX -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- UI OVERLAY -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="start-screen" class="overlay active">
+        <div class="glass-card start-card">
+            <h1 class="title">For Ada</h1>
+            <p>A series of challenges await you...</p>
+            <p style="font-size: 3rem; margin: 20px;">🪄</p>
+            <button id="start-btn" class="btn-primary">Begin Adventure</button>
+        </div>
+    </div>
+
+    <main class="container hidden" id="main-container">
         <div class="glass-panel">
 
             <!-- STAGE 1: THE GATEKEEPER (RIDDLE) -->

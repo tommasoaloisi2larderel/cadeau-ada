@@ -1,53 +1,163 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- STATE MANAGEMENT ---
+    // --- AUDIO SYSTEM (Web Audio API) ---
+    const AudioEngine = {
+        ctx: null,
+        init() {
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContext();
+        },
+        playTone(freq, type, duration) {
+            if (!this.ctx) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.index = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+            gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+        },
+        playSuccess() {
+            this.playTone(440, 'sine', 0.1); // A
+            setTimeout(() => this.playTone(554, 'sine', 0.1), 100); // C#
+            setTimeout(() => this.playTone(659, 'sine', 0.2), 200); // E
+        },
+        playError() {
+            this.playTone(150, 'sawtooth', 0.3);
+        },
+        playClick() {
+            this.playTone(800, 'triangle', 0.05);
+        },
+        playMagical() {
+            // Sparkly arpeggio
+            [523, 659, 783, 1046, 1318, 1568].forEach((f, i) => {
+                setTimeout(() => this.playTone(f, 'sine', 0.3), i * 50);
+            });
+        }
+    };
+
+
+    // --- VISUAL FX SYSTEM (Canvas Particles) ---
+    const ParticleSystem = {
+        canvas: document.getElementById('bg-canvas'),
+        ctx: null,
+        particles: [],
+        init() {
+            this.ctx = this.canvas.getContext('2d');
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+            this.animate();
+
+            // Mouse trail
+            document.addEventListener('mousemove', (e) => {
+                // Add particles on move
+                if (Math.random() > 0.5)
+                    this.addParticle(e.clientX, e.clientY);
+            });
+        },
+        resize() {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+        },
+        addParticle(x, y) {
+            this.particles.push({
+                x, y,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                life: 1,
+                color: `hsl(${Math.random() * 60 + 300}, 100%, 70%)`,
+                size: Math.random() * 4 + 1
+            });
+        },
+        animate() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            for (let i = this.particles.length - 1; i >= 0; i--) {
+                const p = this.particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.02;
+                p.size *= 0.95;
+
+                this.ctx.fillStyle = p.color;
+                this.ctx.globalAlpha = p.life;
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                if (p.life <= 0) this.particles.splice(i, 1);
+            }
+            requestAnimationFrame(() => this.animate());
+        }
+    };
+
+
+    // --- GAME LOGIC ---
     let currentStage = 1;
 
+    // START BUTTON
+    document.getElementById('start-btn').addEventListener('click', () => {
+        AudioEngine.init();
+        AudioEngine.playMagical();
+        ParticleSystem.init();
+
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('main-container').classList.remove('hidden');
+        updateProgress();
+    });
+
+    function updateProgress() {
+        const percent = ((currentStage - 1) / 4) * 100;
+        document.getElementById('progress-bar').style.width = `${percent}%`;
+    }
+
     function nextStage() {
-        // Hide current
+        AudioEngine.playSuccess();
         document.getElementById(`stage-${currentStage}`).classList.remove('active');
         document.getElementById(`stage-${currentStage}`).classList.add('hidden');
 
         currentStage++;
+        updateProgress();
 
-        // Show next
         const nextEl = document.getElementById(`stage-${currentStage}`);
         if (nextEl) {
             nextEl.classList.remove('hidden');
-            nextEl.classList.add('active');
+            setTimeout(() => nextEl.classList.add('active'), 50); // Slight delay for animation
 
-            // Init level logic
             if (currentStage === 2) initMemoryGame();
             if (currentStage === 3) initPatternGame();
             if (currentStage === 4) initGiftReveal();
         }
     }
 
+
     // --- STAGE 1: RIDDLE ---
     const riddleInput = document.getElementById('riddle-input');
     const riddleSubmit = document.getElementById('riddle-submit');
     const riddleError = document.getElementById('riddle-error');
-
-    // CHANGE THIS ANSWER!
     const CORRECT_ANSWER = "keyboard";
 
     riddleSubmit.addEventListener('click', checkRiddle);
     riddleInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Prevent form submission glitches
+            e.preventDefault();
             checkRiddle();
         }
     });
 
     function checkRiddle() {
         const val = riddleInput.value.toLowerCase().trim();
-        // Allow multiple valid answers if needed
         if (val === CORRECT_ANSWER || val.includes("key")) {
             nextStage();
         } else {
+            AudioEngine.playError();
             riddleError.classList.remove('hidden');
-            riddleInput.classList.add('shake'); // Optional animation
             setTimeout(() => riddleError.classList.add('hidden'), 2000);
         }
     }
@@ -57,18 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function initMemoryGame() {
         const grid = document.getElementById('memory-grid');
         const icons = ['❤️', '🎂', '🌟', '🦄', '🎁', '🌹', '🍭', '🎵'];
-        // Pick 4 pairs for an 8-card grid
         const selectedIcons = icons.slice(0, 4);
-        const cards = [...selectedIcons, ...selectedIcons]; // Duplicates
+        const cards = [...selectedIcons, ...selectedIcons].sort(() => 0.5 - Math.random());
 
-        // Shuffle
-        cards.sort(() => 0.5 - Math.random());
-
-        let hasFlippedCard = false;
-        let lockBoard = false;
-        let firstCard, secondCard;
-        let matchedPairs = 0;
-        const totalPairs = 4;
+        let hasFlippedCard = false, lockBoard = false;
+        let firstCard, secondCard, matchedPairs = 0;
 
         grid.innerHTML = '';
         cards.forEach(icon => {
@@ -85,44 +188,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         function flipCard() {
-            if (lockBoard) return;
-            if (this === firstCard) return;
-
+            if (lockBoard || this === firstCard) return;
+            AudioEngine.playClick();
             this.classList.add('flipped');
-
             if (!hasFlippedCard) {
-                hasFlippedCard = true;
-                firstCard = this;
-                return;
+                hasFlippedCard = true; firstCard = this; return;
             }
-
             secondCard = this;
             checkForMatch();
         }
 
         function checkForMatch() {
-            // Check inner content
             let isMatch = firstCard.querySelector('.memory-card-back').innerText ===
                 secondCard.querySelector('.memory-card-back').innerText;
-
             isMatch ? disableCards() : unflipCards();
         }
 
         function disableCards() {
             firstCard.removeEventListener('click', flipCard);
             secondCard.removeEventListener('click', flipCard);
+            AudioEngine.playTone(600, 'sine', 0.1); // Small success
             resetBoard();
-
             matchedPairs++;
-            if (matchedPairs === totalPairs) {
-                setTimeout(() => {
-                    nextStage();
-                }, 1000);
-            }
+            if (matchedPairs === 4) setTimeout(nextStage, 1000);
         }
 
         function unflipCards() {
             lockBoard = true;
+            AudioEngine.playError();
             setTimeout(() => {
                 firstCard.classList.remove('flipped');
                 secondCard.classList.remove('flipped');
@@ -137,38 +230,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- STAGE 3: PATTERN GAME (SIMON SAYS) ---
+    // --- STAGE 3: PATTERN GAME ---
     function initPatternGame() {
         const pads = document.querySelectorAll('.pad');
         const statusMsg = document.getElementById('pattern-status');
-        let sequence = [];
-        let playerSequence = [];
-        let round = 0;
-        const MAX_ROUNDS = 3;
+        let sequence = [], playerSequence = [], round = 0, MAX_ROUNDS = 3;
 
         function startGame() {
-            sequence = [];
-            playerSequence = [];
-            round = 0;
+            sequence = []; playerSequence = []; round = 0;
             nextRound();
         }
 
         function nextRound() {
             round++;
-            statusMsg.innerText = `Watch level ${round}`;
+            statusMsg.innerText = `Level ${round}`;
             playerSequence = [];
-            const nextColor = Math.floor(Math.random() * 4);
-            sequence.push(nextColor);
-
+            sequence.push(Math.floor(Math.random() * 4));
             disableInput();
-            playSequence(sequence);
+            setTimeout(() => playSequence(sequence), 500);
         }
 
         function playSequence(seq) {
             let i = 0;
             const interval = setInterval(() => {
-                const padId = seq[i];
-                activatePad(padId);
+                activatePad(seq[i]);
                 i++;
                 if (i >= seq.length) {
                     clearInterval(interval);
@@ -180,6 +265,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function activatePad(id) {
             const pad = document.querySelector(`.pad[data-id="${id}"]`);
             pad.classList.add('active');
+            // Sound based on ID
+            const freqs = [261, 329, 392, 523]; // C E G C
+            AudioEngine.playTone(freqs[id], 'sine', 0.3);
             setTimeout(() => pad.classList.remove('active'), 400);
         }
 
@@ -188,29 +276,25 @@ document.addEventListener('DOMContentLoaded', () => {
             activatePad(id);
             playerSequence.push(id);
 
-            // Check correctness immediately
-            const verificationIndex = playerSequence.length - 1;
-            if (playerSequence[verificationIndex] !== sequence[verificationIndex]) {
-                statusMsg.innerText = "Wrong! Try again.";
-                setTimeout(startGame, 1000); // Restart game
+            if (playerSequence[playerSequence.length - 1] !== sequence[playerSequence.length - 1]) {
+                statusMsg.innerText = "Try again!";
+                AudioEngine.playError();
+                setTimeout(startGame, 1000);
                 return;
             }
 
-            // Check if round complete
             if (playerSequence.length === sequence.length) {
                 if (round === MAX_ROUNDS) {
-                    statusMsg.innerText = "Correct!";
+                    statusMsg.innerText = "Perfect!";
                     disableInput();
                     setTimeout(nextStage, 1000);
                 } else {
-                    statusMsg.innerText = "Good...";
                     setTimeout(nextRound, 1000);
                 }
             }
         }
 
         function enableInput() {
-            statusMsg.innerText = "Your turn";
             pads.forEach(pad => pad.addEventListener('click', handlePadClick));
         }
 
@@ -218,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pads.forEach(pad => pad.removeEventListener('click', handlePadClick));
         }
 
-        // Start delay
         setTimeout(startGame, 1000);
     }
 
@@ -231,6 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const restartBtn = document.getElementById('restart-btn');
 
         giftBox.addEventListener('click', () => {
+            AudioEngine.playMagical();
             giftContainer.style.opacity = '0';
             setTimeout(() => {
                 giftContainer.classList.add('hidden');
@@ -238,16 +322,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 void celebrationContainer.offsetWidth;
                 celebrationContainer.classList.add('visible');
                 launchConfetti();
+
+                // Final full progress
+                document.getElementById('progress-bar').style.width = '100%';
             }, 800);
         });
 
-        restartBtn.addEventListener('click', () => {
-            window.location.reload();
-        });
+        restartBtn.addEventListener('click', () => window.location.reload());
     }
 
-
-    // --- CONFETTI UTIL ---
+    // --- CONFETTI ---
     function launchConfetti() {
         const duration = 3000;
         const animationEnd = Date.now() + duration;

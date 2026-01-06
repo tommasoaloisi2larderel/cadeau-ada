@@ -20,11 +20,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-x: hidden;
+    overflow: hidden;
     /* Animated Gradient Background */
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
+    position: relative;
 }
 
 @keyframes gradientBG {
@@ -41,11 +42,68 @@ body {
     }
 }
 
+/* --- CANVAS & OVERLAYS --- */
+#bg-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s;
+}
+
+.overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.start-card {
+    text-align: center;
+    max-width: 400px;
+    animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.progress-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 100;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: white;
+    box-shadow: 0 0 10px white;
+    transition: width 1s ease-in-out;
+}
+
 .container {
     width: 100%;
     max-width: 500px;
     padding: 20px;
     perspective: 1000px;
+    z-index: 10;
+    /* Above canvas */
 }
 
 /* --- GLASSMORPHISM --- */
@@ -149,6 +207,24 @@ input[type="text"]:focus {
 .btn-icon:hover {
     transform: scale(1.1);
     background: #f0f0f0;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    box-shadow: 0 5px 20px rgba(118, 75, 162, 0.4);
+    transition: transform 0.2s;
+}
+
+.btn-primary:active {
+    transform: scale(0.95);
 }
 
 .btn-secondary {
@@ -271,8 +347,6 @@ input[type="text"]:focus {
     background: #8e44ad;
     color: #8e44ad;
 }
-
-/* Changed color */
 
 /* --- GIFT BOX --- */
 .gift-container {
@@ -420,6 +494,18 @@ input[type="text"]:focus {
 
     50% {
         transform: translateY(-15px);
+    }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
     }
 }
 
